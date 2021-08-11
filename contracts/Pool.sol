@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract Pool is IERC20{
+    address private _poolOwner;
     bool private _init;
  
      address private _assetA;
@@ -13,15 +14,26 @@ contract Pool is IERC20{
      
      uint256 private _balanceA;
      uint256 private _balanceB;
+     
+     uint256 private _Product_Market_Maker =  _balanceA * _balanceB;
 
-    constructor(_assetA , _assetB){}
-
+    constructor(address assetA_ , address assetB_){
+        
+        _assetA = assetA_;
+        _assetB = assetB_;
     }
+
     
-    
-    
-    function deposit ()  {
+    function deposit (uint256 amountA_ , uint256 amountB_) public {
+        if(!_init){
+            require (amountA_ > 0 , "Pool : put some assetA");
+            require (amountB_ > 0 , "Pool : put some assetB");
+            _poolOwner = address(msg.sender);
+            
+        } 
         _init = true;
-        _poolOwner = address(msg.sender)
+        transferFrom(msg.sender , address(this) , amountA_);
+        transferFrom(msg.sender , address(this) , amountB_);
+        
     }
 }
