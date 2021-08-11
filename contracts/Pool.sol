@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-contract Pool is IERC20{
+contract Pool{
     address private _poolOwner;
     bool private _init;
  
@@ -29,11 +29,10 @@ contract Pool is IERC20{
             require (amountA_ > 0 , "Pool : put some assetA");
             require (amountB_ > 0 , "Pool : put some assetB");
             _poolOwner = address(msg.sender);
-            
         } 
         _init = true;
-        transferFrom(msg.sender , address(this) , amountA_);
-        transferFrom(msg.sender , address(this) , amountB_);
+        IERC20(_assetA).transferFrom(msg.sender , address(this) , amountA_);
+        IERC20(_assetB).transferFrom(msg.sender , address(this) , amountB_);
         
     }
 }
